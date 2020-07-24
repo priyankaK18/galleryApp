@@ -9,6 +9,7 @@ type State = {
   galData: any;
   isOpen:Boolean,
   imgUrl:String,
+  totalImg:any
 };
 const APIURL = "https://api.unsplash.com/search/photos?";
 const APIKEY = "IbifwU4jKdF-KgX3UnZMabEa1zy2QA6KeS_CjT1_8dY";
@@ -18,6 +19,7 @@ class ImageSearchPage extends React.Component<PaymentResponse, State> {
     galData: [],
     isOpen: false,
     imgUrl:'',
+    totalImg:1,
   };
   getPhotos = (page = 1) => {
     return axios.get(`${APIURL}client_id=${APIKEY}&page=${page}&query=${this.state.searchTerm}`);
@@ -31,13 +33,12 @@ class ImageSearchPage extends React.Component<PaymentResponse, State> {
     }
   searchImage = async () => {
     const response = await this.getPhotos();
-    console.log(response);
     let galVal = this.state.galData;
     galVal = galVal.concat(response.data.results);
-    this.setState({ galData: galVal });
+    this.setState({ galData: galVal,totalImg: response.data.total});
     };
   render() {
-    const ress = this.state.galData;
+    const ress:any = this.state.galData;
     let ovStyle:any = this.state.isOpen ? 'blur(6px)':'none';
     return (
       <React.Fragment>
@@ -94,6 +95,7 @@ class ImageSearchPage extends React.Component<PaymentResponse, State> {
             />
             </div>)}
             </div>
+        {this.state.totalImg == 0 ? <div className="errorDiv"> No image Found!!</div> : ''}
       </React.Fragment>
     );
   }
